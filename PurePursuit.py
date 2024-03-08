@@ -1,4 +1,6 @@
 # -*-coding:GBK-*-
+import os.path
+
 import numpy as np
 from matplotlib import pyplot as plt
 
@@ -63,7 +65,11 @@ class SimpleTest:
         self.model = SimpleTest.CarModel(initial_state, L, dt)
         self.pure_pursuit = PurePursuit(lam, c, L)
 
-    def offline_test(self, path, test_cnt, x_lim=runtime.x_lim, y_lim=runtime.y_lim):
+    def offline_test(self, path, test_cnt, x_lim=runtime.x_lim, y_lim=runtime.y_lim,
+                     result_dir=runtime.save_fig_dir,result_name = runtime.save_fig_name):
+        if not os.path.exists(result_dir):
+            os.mkdir(result_dir)
+        save_path = os.path.join(result_dir,result_name)
         plt.xlim([-x_lim, x_lim])
         plt.ylim([-y_lim, y_lim])
         past = path[0]
@@ -79,6 +85,7 @@ class SimpleTest:
             print(self.model.state)
             plt.plot([past_s[0], self.model.state[0]], [past_s[1], self.model.state[1]], c='red')
             past_s = self.model.state.copy()
+        plt.savefig(save_path)
         plt.show()
 
     @staticmethod
